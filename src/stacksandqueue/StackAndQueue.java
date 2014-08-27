@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class StackAndQueue {
-	public static void main(String[] args){
+	public static void main(String[] args) throws Exception{
 
 		MinStack s = new MinStack(16);
 		
@@ -39,24 +39,112 @@ public class StackAndQueue {
 //		System.out.println("pop: "+ss.pop());
 //		
 //		System.out.println("stack is empty: "+ss.isEmpty());
-//
+
+//		SetOfStacks sos = new SetOfStacks();
 //		
-		SetOfStacks sos = new SetOfStacks();
-		
-		int counter = 14;
-		for(int i =0; i < counter ; i++){
-			System.out.println("push: "+i);
-			sos.push(i);
+//		int counter = 14;
+//		for(int i =0; i < counter ; i++){
+//			System.out.println("push: "+i);
+//			sos.push(i);
+//		}
+//		
+//		for(int i = 0 ; i < counter ; i++){
+//			System.out.println("pop: "+sos.pop());
+//		}
+		StackT s1 = new StackT();
+		StackT s2 = new StackT();
+		StackT s3 = new StackT();
+		for(int i =4 ; i >0 ; i--){
+//			System.out.println("pushing: "+i);
+			s1.push(new NodeH(i));
 		}
+		towerOfHanoi(s1, s2, s3);
 		
-		for(int i = 0 ; i < counter ; i++){
-			System.out.println("pop: "+sos.pop());
+		for(int i = 0; i < 4; i++){
+			System.out.println(s3.pop().size);
 		}
-		
+	}
+	
+	/**
+	 * 
+	 * @param n number of  
+	 * @param s1
+	 * @param s2
+	 * @param s3
+	 * @throws Exception 
+	 */
+	public static void towerOfHanoi( StackT s1, StackT s2, StackT s3) throws Exception{
+		int n = s1.size();
+		//first move top n-1 to s2
+		moveTopNToSecond(n-1, s1, s2, s3);
+//		System.out.println("moving "+s1.peek().size +" to s3");
+		s3.push(s1.pop());
+		moveTopNToSecond(n-1, s2, s3, s1);
+	}
+
+	public static void moveTopNToSecond(int n, StackT s1, StackT s2,  StackT s3) throws Exception{
+		if(n==2){
+//			System.out.println("moving last two");
+			s3.push(s1.pop());
+			s2.push(s1.pop());
+			s2.push(s3.pop());
+		}
+		else{
+			moveTopNToSecond(n-1, s1, s3, s2);
+//			System.out.println("moving "+s1.peek().size +" to s2");
+			s2.push(s1.pop());
+			moveTopNToSecond(n-1, s3, s2, s1);
+		}
+	}
+	
+	public static void move(Stack<NodeH> s1, Stack<NodeH> s2){
+		s2.push(s1.pop());
+	}
+}
+
+class StackT{
+	private Stack<NodeH> stack;
+	public StackT(){
+		stack = new Stack<NodeH>();
+	}
+	
+	public NodeH pop(){
+		return stack.pop();
+	}
+	
+	public void push(NodeH n) throws Exception{
+		if(stack.isEmpty()){
+			stack.push(n);
+		}
+		else{
+			NodeH t = stack.peek();
+			if(t.size < n.size){
+				throw new Exception("mush push smaller size!");
+			}
+			else{
+				stack.push(n);
+			}
+		}
+	}
+	
+	public NodeH peek(){
+		return stack.peek();
+	}
+	
+	public int size(){
+		return stack.size();
+	}
+}
+
+class NodeH{
+	int size;
+	public NodeH(int d){
+		this.size = d;
 	}
 }
 
 class SetOfStacks{
+	
 	ArrayList<SizedStack> stacks;
 	
 	public SetOfStacks(){
