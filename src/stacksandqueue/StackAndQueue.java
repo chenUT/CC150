@@ -5,25 +5,8 @@ import java.util.Stack;
 
 public class StackAndQueue {
 	public static void main(String[] args) throws Exception{
-
-		MinStack s = new MinStack(16);
-		
-		s.push(5);
-		s.push(3);
-		s.push(4);
-		s.push(2);
-		s.push(6);
-//		
-//		System.out.println("min:"+s.min());
-//		System.out.println("pop:"+s.pop());
-//		System.out.println("min:"+s.min());
-//		System.out.println("pop:"+s.pop());
-//		System.out.println("min:"+s.min());
-//		System.out.println("pop:"+s.pop());
-//		System.out.println("min:"+s.min());
-//		System.out.println("pop:"+s.pop());
-//		System.out.println("min:"+s.min());
-//		System.out.println("pop:"+s.pop());
+//		 queueFromStack();
+		sortStackAscending();
 		
 //		SizedStack ss = new SizedStack(4);
 //		
@@ -40,17 +23,112 @@ public class StackAndQueue {
 //		
 //		System.out.println("stack is empty: "+ss.isEmpty());
 
-//		SetOfStacks sos = new SetOfStacks();
-//		
-//		int counter = 14;
-//		for(int i =0; i < counter ; i++){
-//			System.out.println("push: "+i);
-//			sos.push(i);
-//		}
-//		
-//		for(int i = 0 ; i < counter ; i++){
-//			System.out.println("pop: "+sos.pop());
-//		}
+//	
+	}
+	
+	static void sortStackAscending(){
+		Stack<Integer> s = new Stack<Integer>();
+		for(int i = 10; i > 0 ; i--){
+			s.push(i);
+			System.out.println("push: "+i);
+		}
+		
+		sortStackAscending(s);
+		
+		while(!s.isEmpty()){
+			System.out.println("pop: "+s.pop());
+		}
+	}
+
+	static void sortStackAscending(Stack<Integer> s){
+		Stack<Integer> buffer = new Stack<Integer>();
+		Stack<Integer> temp = new Stack<Integer>();
+
+		int min=Integer.MAX_VALUE; 
+		int size = 0;
+		
+		//count size;
+		//s is empty
+		while(!s.isEmpty()){
+			buffer.push(s.pop());
+			size++;
+		}
+		
+		for(int i =0; i <size ;i++){
+			//first find max
+			for(int j=i ; j < size ; j++){
+				if(min > buffer.peek()){
+					min = buffer.peek();
+				}
+				temp.push(buffer.pop());
+			}
+			
+			//move all back to buffer except max
+			while(!temp.isEmpty()){
+				if(min != temp.peek()){
+					buffer.push(temp.pop());
+				}
+				else{
+					temp.pop();
+				}
+			}
+			
+			s.push(min);
+			min = Integer.MAX_VALUE;
+		}
+	}
+
+
+	
+	static void queueFromStack(){
+
+		QueueViaStacks qvs = new QueueViaStacks();
+		for(int i =0; i <10 ; i++){
+			System.out.printf("enqueue %d\n",i);
+			qvs.enQueue(i);
+		}
+
+        for(int i =0; i <10 ; i++){
+			System.out.printf("dequeue %d\n",qvs.deQueue());
+		}
+	}
+	
+	static void setOfStacks(){
+		SetOfStacks sos = new SetOfStacks();
+		
+		int counter = 14;
+		for(int i =0; i < counter ; i++){
+			System.out.println("push: "+i);
+			sos.push(i);
+		}
+		
+		for(int i = 0 ; i < counter ; i++){
+			System.out.println("pop: "+sos.pop());
+		}
+	}
+	
+	static void minStack(){
+		MinStack s = new MinStack(16);
+		
+		s.push(5);
+		s.push(3);
+		s.push(4);
+		s.push(2);
+		s.push(6);
+		
+		System.out.println("min:"+s.min());
+		System.out.println("pop:"+s.pop());
+		System.out.println("min:"+s.min());
+		System.out.println("pop:"+s.pop());
+		System.out.println("min:"+s.min());
+		System.out.println("pop:"+s.pop());
+		System.out.println("min:"+s.min());
+		System.out.println("pop:"+s.pop());
+		System.out.println("min:"+s.min());
+		System.out.println("pop:"+s.pop());
+	}
+	
+	public static void towerOfHanoi() throws Exception{
 		StackT s1 = new StackT();
 		StackT s2 = new StackT();
 		StackT s3 = new StackT();
@@ -101,6 +179,42 @@ public class StackAndQueue {
 		s2.push(s1.pop());
 	}
 }
+
+class QueueViaStacks{
+	Stack<Integer>[] stacks;
+	int mainStack;
+	
+	@SuppressWarnings("unchecked")
+	public QueueViaStacks(){
+		stacks = (Stack<Integer>[])new Stack[2];
+		stacks[0] = new Stack<Integer>();
+		stacks[1] = new Stack<Integer>();
+		mainStack = 0;
+	}
+	
+	public void enQueue(int data){
+		stacks[mainStack].push(data);
+	}
+	
+	public int deQueue(){
+		int result;
+
+		//we first get the deQueue result
+		while(!stacks[mainStack].isEmpty()){
+			stacks[1-mainStack].push(stacks[mainStack].pop());
+		}
+		
+		//now we grab the result and put stuff back
+		result = stacks[1-mainStack].pop();
+		while(!stacks[1-mainStack].isEmpty()){
+			stacks[mainStack].push(stacks[1-mainStack].pop());
+		}
+		
+		return result;
+	}
+	
+}
+
 
 class StackT{
 	private Stack<NodeH> stack;
