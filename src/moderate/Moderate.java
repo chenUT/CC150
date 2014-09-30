@@ -1,11 +1,34 @@
 package moderate;
 
+import java.util.Random;
+
 public class Moderate {
 	public static void main(String[] args){
 //		testBigNumberNoCompare(4, 5);
 //		testBigNumberNoCompare(6, 5);
 		System.out.println(numZeros(16));
 //		
+	}
+	
+	static int rand7(){
+		int num = 7 * (rand5()-1) ;
+		while(true){
+			if(num > 21){
+				num = 5 * (rand5()-1) + (rand5() - 1);
+			}
+			else{
+				return num % 7+1; 
+			}
+		}
+	}
+	
+	static int rand5(){
+		Random r = new Random();
+		return r.nextInt(4)+1;
+	}
+	
+	static void printEncodeXML(String str){
+		
 	}
 	
 	static long fac(long n){
