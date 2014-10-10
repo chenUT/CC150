@@ -1,6 +1,7 @@
 package treesandgraphs;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 public class Trees {
 	
@@ -40,16 +41,70 @@ public class Trees {
 		System.out.println("timer2:  "+time2);
 	}
 	
-	//TODO finish this
-	static Node findCommonAncestor(Node tree, Node n1, Node n2){
+	//level order travsel
+	static ArrayList<LinkedList<Node>> linkedListForAllLevels(Node t){
+		ArrayList<LinkedList<Node>> result  = new ArrayList<LinkedList<Node>>();
 		return null;
 	}
-	//TODO finish this
+
+	static PNode findNextNodeInOrder(PNode n){
+		if(n != null){
+			if(n.parent == null || n.right != null){
+				return findLeftMostChile(n.right);
+			}
+			else{
+				if( n.parent.left.value == n.value){
+					return n.parent;
+				}
+				else{
+					PNode p;
+					while((p = n.parent) != null){
+						if(p.left.value == n.value){
+							break;
+						}
+						n = p;
+					}
+					return p;
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	static PNode findLeftMostChile(PNode n){
+		if( n == null) return n;
+		while(n.left != null) n = n.left;
+		return n;
+	}
+	
+	static Node findCommonAncestor(Node tree, Node n1, Node n2){
+		//null means false
+		if(tree == null){
+			return null;
+		}
+		//both on same side we keep searching
+		else if(hasNode(tree.left, n1) && hasNode(tree.left, n2)){
+			return findCommonAncestor(tree.left, n1, n2);
+		}
+		else if(hasNode(tree.right, n1) && hasNode(tree.right, n2)){
+			return findCommonAncestor(tree.right, n1, n2);
+		}
+		//both on different side we find the solution
+		else{
+			return tree;
+		}
+	}
+
 	static boolean hasNode(Node tree, Node n){
 		//reach the end do not find
 		if(tree == null)
 			return false;
-		return false;
+		
+		if(tree.value == n.value)
+			return true;
+		
+		return hasNode(tree.left, n) || hasNode(tree.right, n);
 	}
 	
 	static boolean isSubTree(Node bigTree, Node smallTree){
@@ -90,7 +145,7 @@ public class Trees {
 			return false;
 	}
 	
-	/*faster ?*/
+	/*the "correct" answer, is it faster ? i dont think so....*/
 	static void findSum(Node tree, int sum, ArrayList<Integer> buffer, int level){
 		if(tree == null) return;
 		int tmp = sum;
@@ -117,7 +172,8 @@ public class Trees {
 	/*
 	 * another implementation for findSum
 	 * call printPath(target, root) to begin
-	 * slower?
+	 * slower? 
+	 * this is a modified version of pre-order search
 	 */
 	static void printPath(int target, Node tree){
 		if(tree != null){
@@ -145,9 +201,21 @@ public class Trees {
 		printPathRec(target, sum, curr.left, path);
 		printPathRec(target, sum, curr.right, path);
 	}
-		
-	
 }
+
+class PNode{
+	int value;
+	String name;
+	PNode parent;
+	PNode left;
+	PNode right;
+
+	public PNode(int a, String name){
+		this.value = a; 
+		this.name = name;
+	}
+}
+
 class Node{
 	int value;
 	String name;
